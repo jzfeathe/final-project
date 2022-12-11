@@ -2,9 +2,10 @@
 #author: "Justin Feathers"
 #date: '2022-12-05'
 
-# Load the required packages
+# Loads packages
 library(tidyverse)
 library(shiny)
+library(shinydashboard)
 library(dplyr)
 library(caret)
 library(DT)
@@ -17,4 +18,6 @@ names(data) <- c("Age", "Workclass", "Fnlwgt", "Education", "Education Num", "Ma
                  "Hours Per Week", "Native Country", "Yearly Income")
 data[sapply(data, is.character)] <- lapply(data[sapply(data, is.character)], as.factor)
 
-
+# Server
+shinyServer(function(input, output, session){
+})
