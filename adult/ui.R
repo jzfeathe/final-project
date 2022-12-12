@@ -57,7 +57,6 @@ shinyUI(navbarPage("Final Project",
                                                  selectInput("x", h4("Which variable would you like to plot?"),
                                                              choices = colnames(factor),
                                                              selected = "Education"),
-                                                 checkboxInput("con", h5("Also display contingency table?")),
                                 ),
 
                                 conditionalPanel(condition = "input.plotType == 'Histogram'",
@@ -76,6 +75,14 @@ shinyUI(navbarPage("Final Project",
                                                              choices = colnames(numeric),
                                                              selected = "Hours Per Week"),
                                 ),
+                                radioButtons(
+                                  "rbSum",
+                                  label = "Which type of summary?",
+                                  choices = list(
+                                    "Mean",
+                                    "Median")),
+                                menuSubItem("summary", tabName = "Summary"),
+                                
                                 sliderInput("slider1",
                                             h4("How many rows of data do you want to use?"),
                                             min = 0,
@@ -106,7 +113,7 @@ shinyUI(navbarPage("Final Project",
                                            fluidRow(
                                              column(12,
                                                     h4("More stuff here"),
-                                                    #MLR
+                                                    #GLM
                                                     checkboxGroupInput("variables", h4("Choose desired predictor variable(s)"),
                                                                        choices = colnames(data)),
                                                     sliderInput("slider2",

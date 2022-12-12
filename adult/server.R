@@ -57,18 +57,26 @@ shinyServer(function(input, output, session){
     }
   })
   
-  output$table <- renderDataTable({
-    plotType <- input$plotType
-    x <- input$x
-    con <- input$con
-    if(plotType == "Bar" & con){
-      table(data, get(x))
+  output$table <- renderTable({
+    #get new data 
+    newData <- getData()
+    
+    if(input$rbSum == "Mean"){
+      newData %>% group_by(Outcome) %>%
+        summarise(
+          Avg = round(mean(!!sym(input$x)), 0),
+          Sd = round(sd(!!sym(input$x)), 0))
+    }else if(input$rbSum == "Median"){
+      newData %>% group_by(Outcome) %>%
+        summarise(
+          Median = median(!!sym(input$x)),
+          IQR = round(IQR(!!sym(input$x)), 0))
     }
   })
   
   output$mean <- renderPrint({
     if(input$plotType == "Histogram"){
-      colMeans()
+      mean(get(input$x2))
     }
     else if (input$plotType == "Scatter"){
       mean(input$x3)
@@ -76,8 +84,24 @@ shinyServer(function(input, output, session){
     }
   })
   
-  #MLR
+  #GLM
   output$models <- renderPrint({
+    
+  })
+  
+  #create a new dataset with selected variables
+  Data_model<-eventReactive(input$run,{
+    
+    data$Outcome<-as.factor(data$Outcome)
+    
+    data_selected<-select(data,c(input$variables, "Outcome"))
+    
+    set.seed(250)
+    index <- initial_split(data_selected,
+                           prop = input$slider2)
+    train <- training(index)
+    test <- testing(index)
+    list(train, test, data_selected)
     
   })
     
