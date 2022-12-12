@@ -76,10 +76,36 @@ shinyUI(navbarPage("Final Project",
                                 verbatimTextOutput("mean"),
                                 ),
                               ),
-                            ),
-                   
-                   tabPanel("Modeling",
-                     titlePanel("Modeling"),
                    ),
+                   #tabsetPanel(
+                   tabPanel("Modeling",
+                            tabsetPanel(
+                              tabPanel("Modeling Info",
+                                       fluidRow(
+                                         column(width = 12,
+                                         )
+                                       )
+                              ),
+                              tabPanel("Modeling Fitting",
+                                       #MLR
+                                       checkboxGroupInput("predictMLR", h4("Choose desired predictor variable(s)"),
+                                                          choices = colnames(data),
+                                                          selected = "")
+                                       ),
+                              tabPanel("Prediction",
+                                       )
+                            ),
+                   ),
+
 )
 )
+
+
+
+
+
+
+
+
+
+

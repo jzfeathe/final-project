@@ -61,6 +61,11 @@ shinyServer(function(input, output, session){
       mean(input$y)
     }
   })
+  
+  #MLR
+  output$models <- renderPrint({
+    
+  })
     
 })
   
