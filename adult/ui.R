@@ -34,8 +34,49 @@ shinyUI(navbarPage("Final Project",
                                                a(href = "https://archive.ics.uci.edu/ml/datasets/Adult",
                                                  target = "_blank", "here."),
                                      ),
-                              ),
                             ),
                    ),
-))
-                                              
+                   ),
+                   
+                   # Creates Data Exploration page
+                   tabPanel("Data Exploration",
+                            sidebarLayout(
+                              sidebarPanel(
+                                h4("You can create graphs using different options below."),
+                                radioButtons("plotType",
+                                             label = "Select the Plot Type",
+                                             choices = c("Bar", "Histogram", "Scatter"),
+                                             selected = "Bar"),
+                                conditionalPanel(condition = "input.plotType == 'Bar'",
+                                                 selectInput("x", h4("Which variable would you like to plot?"),
+                                                             choices = colnames(factor),
+                                                             selected = "Education"),
+                                                 ),
+                                conditionalPanel(condition = "input.plotType == 'Histogram'",
+                                                 selectInput("x2", h4("Which variable would you like to plot?"),
+                                                             choices = colnames(numeric),
+                                                             selected = "Age"),
+                                ),
+                                conditionalPanel(condition = "input.plotType == 'Scatter'",
+                                                 selectInput("x2", h4("Which variable would you like to plot
+                                                                      on the x-axis?"),
+                                                             choices = colnames(numeric),
+                                                             selected = "Age"),
+                                                 selectInput("y", h4("Which variable would you like to plot
+                                                                     on the y-axis?"),
+                                                             choices = colnames(numeric),
+                                                             selected = "Hours Per Week"),
+                                ),
+                                conditionalPanel(condition = "input.plotType != 'Bar'",
+                                                 checkboxInput("con", h5("Also display contingency table?")),
+                                                 ),
+                              ),
+                              mainPanel(
+                                plotOutput("plot"),
+                                dataTableOutput("table"),
+                              )
+                            )
+                   )
+                   )
+)
+                             
