@@ -25,44 +25,47 @@ shinyServer(function(input, output, session){
     plotType <- input$plotType
     x <- input$x
     x2 <- input$x2
+    x3 <- input$x3
     y <- input$y
     con <- input$con
     
     if(plotType == "Bar"){
       g <- ggplot(data, aes(x = get(x)))
-      g + geom_bar() +
-        title
+      g + geom_bar()
     }
     else if(plotType == "Histogram"){
       g <- ggplot(data, aes(x = get(x2)))
       g + geom_histogram()
     }
     else if(plotType == "Scatter"){
-      g <- ggplot(data, aes(x = get(x2)))
+      g <- ggplot(data, aes(x = get(x3)))
       g + geom_point(aes(y = get(y)))
     }
   })
   
   output$table <- renderDataTable({
     plotType <- input$plotType
-    x2 <- input$x2
-    y <- input$y
+    x <- input$x
     con <- input$con
-    if(plotType == "Histogram" & con){
-      table(data, get(x2))
-    } else if(plotType == "Scatter" & con){
-      table(data, get(x2), get(y))
+    if(plotType == "Bar" & con){
+      table(data, get(x))
     }
   })
   
-  observe({
-    updateSelectInput(session, "x",
-                      selected = character(0))
-    
-    updateSelectInput(session, "x2",
-                      selected = character(0))
-    
-    updateSelectInput(session, "y",
-                      selected = character(0))
+  output$mean <- renderPrint({
+    if(input$plotType == "Histogram"){
+      colMeans()
+    }
+    else if (input$plotType == "Scatter"){
+      mean(input$x3)
+      mean(input$y)
+    }
   })
+    
 })
+  
+  
+  
+  
+  
+  

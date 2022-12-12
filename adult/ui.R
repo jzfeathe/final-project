@@ -9,10 +9,10 @@ library(shiny)
 library(shinydashboard)
 library(DT)
 
-# Creates UI
+#Creates UI
 
 shinyUI(navbarPage("Final Project",
-                   # Creates About page
+                   #Creates About page
                    tabPanel("About",
                             fluidRow(
                               column(6, 
@@ -35,10 +35,10 @@ shinyUI(navbarPage("Final Project",
                                                  target = "_blank", "here."),
                                      ),
                             ),
-                   ),
+                            ),
                    ),
                    
-                   # Creates Data Exploration page
+                   #Creates Data Exploration page
                    tabPanel("Data Exploration",
                             sidebarLayout(
                               sidebarPanel(
@@ -51,6 +51,7 @@ shinyUI(navbarPage("Final Project",
                                                  selectInput("x", h4("Which variable would you like to plot?"),
                                                              choices = colnames(factor),
                                                              selected = "Education"),
+                                                 checkboxInput("con", h5("Also display contingency table?")),
                                                  ),
                                 conditionalPanel(condition = "input.plotType == 'Histogram'",
                                                  selectInput("x2", h4("Which variable would you like to plot?"),
@@ -58,7 +59,7 @@ shinyUI(navbarPage("Final Project",
                                                              selected = "Age"),
                                 ),
                                 conditionalPanel(condition = "input.plotType == 'Scatter'",
-                                                 selectInput("x2", h4("Which variable would you like to plot
+                                                 selectInput("x3", h4("Which variable would you like to plot
                                                                       on the x-axis?"),
                                                              choices = colnames(numeric),
                                                              selected = "Age"),
@@ -67,16 +68,18 @@ shinyUI(navbarPage("Final Project",
                                                              choices = colnames(numeric),
                                                              selected = "Hours Per Week"),
                                 ),
-                                conditionalPanel(condition = "input.plotType != 'Bar'",
-                                                 checkboxInput("con", h5("Also display contingency table?")),
-                                                 ),
                               ),
+        
                               mainPanel(
                                 plotOutput("plot"),
                                 dataTableOutput("table"),
-                              )
-                            )
-                   )
-                   )
+                                verbatimTextOutput("mean"),
+                                ),
+                              ),
+                            ),
+                   
+                   tabPanel("Modeling",
+                     titlePanel("Modeling"),
+                   ),
 )
-                             
+)
