@@ -6,10 +6,13 @@
 library(tidyverse)
 library(shiny)
 library(shinydashboard)
-library(dplyr)
+library(shinyWidgets)
+library(shinybusy)
+library(mathjaxr)
 library(caret)
 library(DT)
 library(ggplot2)
+
 
 # Reads in data
 data <- read_csv("./adult.data") %>% as.tibble()
@@ -20,6 +23,17 @@ data[sapply(data, is.character)] <- lapply(data[sapply(data, is.character)], as.
 
 # Server
 shinyServer(function(input, output, session){
+
+  observe({
+    updateSliderInput(session, "slider1",
+                      value = input$slider1)
+    })
+  
+  getData <- reactive({
+    
+    data$Outcome<-as.factor(data$Outcome)
+    newData <- data %>% filter(!!sym(input$x) <= input$slider1)
+  })
 
   output$plot <- renderPlot({
     plotType <- input$plotType

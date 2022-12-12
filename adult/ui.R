@@ -18,11 +18,15 @@ shinyUI(navbarPage("Final Project",
                               column(6, 
                                      h1("What does this app do?"),
                                      wellPanel("This application utilizes a collection of data from the 1994 census database
-                                            to predict whether income exceeds $50,000 annually. Here is some more filler
-                                            information that I will go back and edit later!!!!"),
+                                            to predict whether income exceeds $50,000 annually."),
                                      ),
                               column(6,
-                                     h1("Some More Stuff"),
+                                     h1("Variables of interest are:"),
+                                     h3("Response: Yearly Income"),
+                                     br(),
+                                     h3("Predictors: Age, Workclass, Fnlwgt, Education, Education Num, Marital Status,
+                                        Occupation, Relationship, Race, Sex, Capital Gain, Capital Loss, Hours Per Week,
+                                        and Native Country"),
                                      wellPanel("More information can be found here"),
                               ),
                             ),
@@ -37,7 +41,8 @@ shinyUI(navbarPage("Final Project",
                             ),
                             ),
                    ),
-                   
+
+
                    #Creates Data Exploration page
                    tabPanel("Data Exploration",
                             sidebarLayout(
@@ -47,17 +52,20 @@ shinyUI(navbarPage("Final Project",
                                              label = "Select the Plot Type",
                                              choices = c("Bar", "Histogram", "Scatter"),
                                              selected = "Bar"),
+
                                 conditionalPanel(condition = "input.plotType == 'Bar'",
                                                  selectInput("x", h4("Which variable would you like to plot?"),
                                                              choices = colnames(factor),
                                                              selected = "Education"),
                                                  checkboxInput("con", h5("Also display contingency table?")),
-                                                 ),
+                                ),
+
                                 conditionalPanel(condition = "input.plotType == 'Histogram'",
                                                  selectInput("x2", h4("Which variable would you like to plot?"),
                                                              choices = colnames(numeric),
                                                              selected = "Age"),
                                 ),
+
                                 conditionalPanel(condition = "input.plotType == 'Scatter'",
                                                  selectInput("x3", h4("Which variable would you like to plot
                                                                       on the x-axis?"),
@@ -68,44 +76,50 @@ shinyUI(navbarPage("Final Project",
                                                              choices = colnames(numeric),
                                                              selected = "Hours Per Week"),
                                 ),
+                                sliderInput("slider1",
+                                            h4("How many rows of data do you want to use?"),
+                                            min = 0,
+                                            max = 32560,
+                                            value = 32560,
+                                            step = 500,
+                                ),
                               ),
-        
+                              
                               mainPanel(
                                 plotOutput("plot"),
                                 dataTableOutput("table"),
                                 verbatimTextOutput("mean"),
-                                ),
                               ),
-                   ),
-                   #tabsetPanel(
-                   tabPanel("Modeling",
-                            tabsetPanel(
-                              tabPanel("Modeling Info",
-                                       fluidRow(
-                                         column(width = 12,
-                                         )
-                                       )
-                              ),
-                              tabPanel("Modeling Fitting",
-                                       #MLR
-                                       checkboxGroupInput("predictMLR", h4("Choose desired predictor variable(s)"),
-                                                          choices = colnames(data),
-                                                          selected = "")
-                                       ),
-                              tabPanel("Prediction",
-                                       )
                             ),
                    ),
-
-)
-)
-
-
-
-
-
-
-
-
-
-
+                            
+                   tabPanel("Modeling",
+                                tabsetPanel(
+                                  tabPanel("Modeling Info",
+                                           fluidRow(
+                                             column(12,
+                                                    h4("Just testing some things"),
+                                                    )
+                                           )
+                                  ),
+                                  tabPanel("Model Fitting",
+                                           fluidRow(
+                                             column(12,
+                                                    h4("More stuff here"),
+                                                    #MLR
+                                                    checkboxGroupInput("variables", h4("Choose desired predictor variable(s)"),
+                                                                       choices = colnames(data)),
+                                                    sliderInput("slider2",
+                                                                h4("Train/Test Split %"),
+                                                                min = 0,
+                                                                max = 100,
+                                                                value = 75
+                                                                ),
+                                                    actionButton("run", h5("Crunch the numbers!")),
+                                                    )
+                                             )
+                                           )
+                                )
+                   )
+))
+                   
