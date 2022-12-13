@@ -3,11 +3,19 @@
 #date: '2022-12-05'
 
 # Loads packages
-library(readr)
-library(caret)
+library(tidyverse)
 library(shiny)
 library(shinydashboard)
+library(shinyWidgets)
+library(shinybusy)
+library(mathjaxr)
+library(rpart)
+library(rpart.plot)
+library(rsample)
+library(caret)
 library(DT)
+library(ggplot2)
+library(pROC)
 
 #Creates UI
 
@@ -136,11 +144,30 @@ shinyUI(navbarPage("Final Project",
                                                                  )
                                                         ),
                                                         tabPanel("Decision Tree",
-                                                                 h3("Fit of Decision Tree")
+                                                                 h3("Fit of Decision Tree"),
+                                                                 fluidRow(
+                                                                   box(title = "",  width = 10,  
+                                                                       solidHeader = TRUE, collapsible = FALSE,
+                                                                       verbatimTextOutput("treeSummary"),
+                                                                   ),
+                                                                   box(title = "Classification decision tree",  width = 10,  
+                                                                       solidHeader = TRUE, collapsible = FALSE,
+                                                                       plotOutput("treePlot")
+                                                                   ),
+                                                                 )
                                                         ),
                                                         tabPanel("Random Forest",
-                                                                 h3("Fit of Random Forest")
-                                                        ),
+                                                                 h3("Fit of Random Forest"),
+                                                                 fluidRow(
+                                                                   box(title = "",  width = 10,  
+                                                                       solidHeader = TRUE, collapsible = FALSE,
+                                                                       verbatimTextOutput("randomforest")),
+                                                                   box(title = "Variable Importance Plot",  width = 10,  
+                                                                       solidHeader = TRUE, collapsible = FALSE,
+                                                                       plotOutput("importancePlot")
+                                                                   )
+                                                                 )
+                                                        )
                                                       )
                                                )
                                              )
@@ -178,6 +205,7 @@ shinyUI(navbarPage("Final Project",
                             )
                    )
 ))
+
                          
                             
                             
