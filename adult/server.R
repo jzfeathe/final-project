@@ -18,7 +18,7 @@ library(ggplot2)
 data <- read_csv("./adult.data") %>% as.tibble()
 names(data) <- c("Age", "Workclass", "Fnlwgt", "Education", "Education Num", "Marital Status",
                  "Occupation", "Relationship", "Race", "Sex", "Capital Gain", "Capital Loss",
-                 "Hours Per Week", "Native Country", "Yearly Income")
+                 "Hours Per Week", "Native Country", "Income")
 data[sapply(data, is.character)] <- lapply(data[sapply(data, is.character)], as.factor)
 
 # Server
@@ -29,11 +29,10 @@ shinyServer(function(input, output, session){
                       value = input$slider1)
     })
   
-  getData <- reactive({
-    
-    data$Outcome<-as.factor(data$Outcome)
-    newData <- data %>% filter(!!sym(input$x) <= input$slider1)
-  })
+  # getData <- reactive({
+  #   
+  #   newData <- data %>% filter(!!sym(input$x) <= input$slider1)
+  # })
 
   output$plot <- renderPlot({
     plotType <- input$plotType
@@ -62,12 +61,12 @@ shinyServer(function(input, output, session){
     newData <- getData()
     
     if(input$rbSum == "Mean"){
-      newData %>% group_by(Outcome) %>%
+      newData %>% group_by(Income) %>%
         summarise(
           Avg = round(mean(!!sym(input$x)), 0),
           Sd = round(sd(!!sym(input$x)), 0))
-    }else if(input$rbSum == "Median"){
-      newData %>% group_by(Outcome) %>%
+    } else if(input$rbSum == "Median"){
+      newData %>% group_by(Income) %>%
         summarise(
           Median = median(!!sym(input$x)),
           IQR = round(IQR(!!sym(input$x)), 0))
@@ -84,17 +83,10 @@ shinyServer(function(input, output, session){
     }
   })
   
-  #GLM
-  output$models <- renderPrint({
-    
-  })
-  
   #create a new dataset with selected variables
-  Data_model<-eventReactive(input$run,{
+  model<-eventReactive(input$run,{
     
-    data$Outcome<-as.factor(data$Outcome)
-    
-    data_selected<-select(data,c(input$variables, "Outcome"))
+    data_selected<-select(data, c(input$variables, "Income"))
     
     set.seed(250)
     index <- initial_split(data_selected,
@@ -104,11 +96,61 @@ shinyServer(function(input, output, session){
     list(train, test, data_selected)
     
   })
+  
+  #GLM
+  log <- reactive({
+    #fit training data with glm
+    glmFit <-
+      glm(Income ~ .,
+          data = model()[[1]],
+          family = "binomial")
     
+    # predicted probability of glm
+    glmProb <-
+      predict(glmFit, 
+              newdata = model()[[2]], 
+              type = "response")
+    
+    # predicted outcome of glm
+    glmPred <- rep(0, length(glmProb))
+    glmPred[glmProb > 0.5] <- 1
+    
+    #glm performance
+    glmConf <-
+      confusionMatrix(data = factor(glmPred) ,
+                      reference = model()[[2]]$Income)
+    glmAcc <- glmConff$overall[[1]] #accuracy
+    
+    glmRoc <-
+      roc(response = model()[[2]]$Income,
+          predictor = glmProb)
+    glmAuc <- auc(glmRoc)
+    
+    list(glmFit, glmAcc, glmAuc)
+  })
+  
+  #create glmSummary text info
+  output$glmSummary <- renderPrint({
+    summary(log()[[1]])
+  })
+  
+  
+  #### Classification 
+  tree <- reactive({
+    #fit training data with tree
+    tree_class <- rpart(
+      Income ~ .,
+      data = model()[[1]],
+      method = 'class',
+      parms = list(split = "information"),
+      control = rpart.control(
+        xval = 5,
+        minbucket = 2,
+        cp = 0
+      )
+    )
+  })
 })
-  
-  
-  
   
   
   

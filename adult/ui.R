@@ -51,8 +51,9 @@ shinyUI(navbarPage("Final Project",
                                 radioButtons("plotType",
                                              label = "Select the Plot Type",
                                              choices = c("Bar", "Histogram", "Scatter"),
-                                             selected = "Bar"),
-
+                                             selected = "Bar"
+                                             ),
+                              
                                 conditionalPanel(condition = "input.plotType == 'Bar'",
                                                  selectInput("x", h4("Which variable would you like to plot?"),
                                                              choices = colnames(factor),
@@ -60,7 +61,7 @@ shinyUI(navbarPage("Final Project",
                                 ),
 
                                 conditionalPanel(condition = "input.plotType == 'Histogram'",
-                                                 selectInput("x2", h4("Which variable would you like to plot?"),
+                                                 selectInput("x", h4("Which variable would you like to plot?"),
                                                              choices = colnames(numeric),
                                                              selected = "Age"),
                                 ),
@@ -110,23 +111,57 @@ shinyUI(navbarPage("Final Project",
                                            )
                                   ),
                                   tabPanel("Model Fitting",
-                                           fluidRow(
-                                             column(12,
-                                                    h4("More stuff here"),
-                                                    #GLM
-                                                    checkboxGroupInput("variables", h4("Choose desired predictor variable(s)"),
-                                                                       choices = colnames(data)),
-                                                    sliderInput("slider2",
-                                                                h4("Train/Test Split %"),
-                                                                min = 0,
-                                                                max = 100,
-                                                                value = 75
-                                                                ),
-                                                    actionButton("run", h5("Crunch the numbers!")),
-                                                    )
+                                             fluidRow(
+                                               column(6,
+                                                      h4("More stuff here"),
+                                                      #GLM
+                                                      checkboxGroupInput("variables", h4("Choose desired predictor variable(s)"),
+                                                                         choices = colnames(data)),
+                                                      sliderInput("slider2",
+                                                                  h4("Train/Test Split %"),
+                                                                  min = 0,
+                                                                  max = 1,
+                                                                  value = 0.75
+                                                                  ),
+                                                      actionButton("run", h5("Crunch the numbers!")),
+                                                      ),
+                                               column(6,
+                                                      tabsetPanel(
+                                                        tabPanel("GLM", 
+                                                                 h3("Fit of Logistic Regression"),
+                                                                 fluidRow(
+                                                                   box(title = "",  width = 10,  
+                                                                       solidHeader = TRUE, collapsible = FALSE,
+                                                                       verbatimTextOutput("glmSummary"
+                                                                       )
+                                                                   )
+                                                                 )
+                                                        ),
+                                                        tabPanel("Decision Tree", 
+                                                                 h3("Fit of Decision Tree"),
+                                                                 fluidRow(
+                                                                   box(title = "",  width = 10,  
+                                                                       solidHeader = TRUE, collapsible = FALSE,
+                                                                       verbatimTextOutput("glmSummary",
+                                                                       )
+                                                                   )
+                                                                 )
+                                                        ),
+                                                        tabPanel("Random Forest", 
+                                                                 h3("Fit of Random Forest"),
+                                                                 fluidRow(
+                                                                   box(title = "",  width = 10,  
+                                                                       solidHeader = TRUE, collapsible = FALSE,
+                                                                       verbatimTextOutput("glmSummary",
+                                                                       )
+                                                                   )
+                                                                 )
+                                                        )
+                                                      )
+                                               )
                                              )
-                                           )
+                                  )
                                 )
                    )
 ))
-                   
+             
