@@ -27,7 +27,6 @@ shinyUI(navbarPage("Final Project",
                                      h3("Predictors: Age, Workclass, Fnlwgt, Education, Education Num, Marital Status,
                                         Occupation, Relationship, Race, Sex, Capital Gain, Capital Loss, Hours Per Week,
                                         and Native Country"),
-                                     wellPanel("More information can be found here"),
                               ),
                             ),
                             img(src = "https://www.casanc.org/wp-content/uploads/census-map-of-people.jpg",
@@ -61,7 +60,7 @@ shinyUI(navbarPage("Final Project",
                                 ),
 
                                 conditionalPanel(condition = "input.plotType == 'Histogram'",
-                                                 selectInput("x", h4("Which variable would you like to plot?"),
+                                                 selectInput("x2", h4("Which variable would you like to plot?"),
                                                              choices = colnames(numeric),
                                                              selected = "Age"),
                                 ),
@@ -132,36 +131,57 @@ shinyUI(navbarPage("Final Project",
                                                                  fluidRow(
                                                                    box(title = "",  width = 10,  
                                                                        solidHeader = TRUE, collapsible = FALSE,
-                                                                       verbatimTextOutput("glmSummary"
-                                                                       )
+                                                                       verbatimTextOutput("glmSummary"),
                                                                    )
                                                                  )
                                                         ),
-                                                        tabPanel("Decision Tree", 
-                                                                 h3("Fit of Decision Tree"),
-                                                                 fluidRow(
-                                                                   box(title = "",  width = 10,  
-                                                                       solidHeader = TRUE, collapsible = FALSE,
-                                                                       verbatimTextOutput("glmSummary",
-                                                                       )
-                                                                   )
-                                                                 )
+                                                        tabPanel("Decision Tree",
+                                                                 h3("Fit of Decision Tree")
                                                         ),
-                                                        tabPanel("Random Forest", 
-                                                                 h3("Fit of Random Forest"),
-                                                                 fluidRow(
-                                                                   box(title = "",  width = 10,  
-                                                                       solidHeader = TRUE, collapsible = FALSE,
-                                                                       verbatimTextOutput("glmSummary",
-                                                                       )
-                                                                   )
-                                                                 )
-                                                        )
+                                                        tabPanel("Random Forest",
+                                                                 h3("Fit of Random Forest")
+                                                        ),
                                                       )
                                                )
                                              )
+                                  ),
+                                  tabPanel("Prediction",
+                                           fluidRow(
+                                             column(6,
+                                                    h4("This is where some form of prediction interval should be created
+                                                       to allow the user to input a value for x and get the predicted
+                                                       value.")
+                                             )
+                                           )
                                   )
                                 )
+                   ),
+                   tabPanel("Data",
+                            sidebarLayout(
+                              sidebarPanel(
+                                h4("You can subset and save the data as a .csv file"),
+                                checkboxGroupInput("subCol",
+                                            h4("Which variables would you like to include?"),
+                                            choices = colnames(data),
+                                ),
+                                selectInput("subRow",
+                                            h4("Which variable would you like to group by?"),
+                                            choices = colnames(data),
+                                            ),
+                                h4("Save the dataset?"),
+                                downloadButton("download", "Download")
+                              ),
+                              mainPanel(
+                                dataTableOutput("scroll")
+                                
+                              )
+                            )
                    )
 ))
-             
+                         
+                            
+                            
+                            
+                            
+                            
+                            

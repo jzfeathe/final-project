@@ -29,10 +29,10 @@ shinyServer(function(input, output, session){
                       value = input$slider1)
     })
   
-  # getData <- reactive({
-  #   
-  #   newData <- data %>% filter(!!sym(input$x) <= input$slider1)
-  # })
+  getData <- reactive({
+
+    newData <- data %>% filter(!!sym(input$x) <= input$slider1)
+  })
 
   output$plot <- renderPlot({
     plotType <- input$plotType
@@ -150,6 +150,31 @@ shinyServer(function(input, output, session){
       )
     )
   })
+  
+ subData <- reactive({
+    input$subCol
+    updateSelectInput(session, "subRow", choices = input$subCol)
+    subData <- data %>% select(input$subCol) %>%
+      group_by(input$subRow)
+  })
+  
+  output$scroll <- renderDataTable({
+    subData()
+  })
+  
+  output$download <- downloadHandler(
+    filename = function(){
+      paste("data-", Sys.Date(), ".csv", sep = "")
+    },
+    content = function(file){
+      write.csv(subData, file)
+    }
+  )
+
+ 
+  
+  
+ 
 })
   
   
