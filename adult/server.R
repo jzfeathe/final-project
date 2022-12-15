@@ -24,6 +24,8 @@ names(data) <- c("Age", "Workclass", "Fnlwgt", "Education", "Education Num", "Ma
                  "Occupation", "Relationship", "Race", "Sex", "Capital Gain", "Capital Loss",
                  "Hours Per Week", "Native Country", "Income")
 data[sapply(data, is.character)] <- lapply(data[sapply(data, is.character)], as.factor)
+factor <- data[sapply(data, is.factor)]
+numeric <- data[sapply(data, is.numeric)]
 
 # Server
 shinyServer(function(input, output, session){
